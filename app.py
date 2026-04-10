@@ -11,6 +11,30 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+def calculate_probability(user_rank, avg_cutoff):
+    # ratio < 1 means user rank is better than cutoff (good)
+    # ratio > 1 means user rank is worse than cutoff (bad)
+    ratio = user_rank / avg_cutoff
+
+    if ratio <= 0.60:
+        return 95
+    elif ratio <= 0.70:
+        return 90
+    elif ratio <= 0.80:
+        return 82
+    elif ratio <= 0.90:
+        return 72
+    elif ratio <= 1.00:
+        return 60
+    elif ratio <= 1.10:
+        return 45
+    elif ratio <= 1.20:
+        return 30
+    elif ratio <= 1.35:
+        return 18
+    else:
+        return 10
+
 # ============================================================
 # PREDICTION LOGIC
 # ============================================================
@@ -97,6 +121,8 @@ def predict_colleges(rank, category, gender, branch, limit=50):
             f"over {years_count} year(s) → ratio {ratio:.2f}"
         )
 
+        probability = calculate_probability(rank, int(avg_cutoff))
+
         results.append({
             'inst_code'   : meta[key]['inst_code'],
             'college_name': meta[key]['college_name'],
@@ -112,9 +138,14 @@ def predict_colleges(rank, category, gender, branch, limit=50):
             'ratio'       : round(ratio, 2),
             'trend'       : trend,
             'explanation' : explanation,
+
+
+            'probability' : probability,
+
+
         })
 
-    results.sort(key=lambda x: x['ratio'])
+    results.sort(key=lambda x: x['probability'], reverse=True)
     return results[:limit]
 
 # ============================================================
