@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Find My College – TS EAMCET Predictor</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --primary: #1a3c5e;
+  --primary-light: #2563a8;
+  --accent: #f97316;
+  --surface: #f8fafc;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --high: #16a34a;
+  --high-bg: #dcfce7;
+  --med: #d97706;
+  --med-bg: #fef3c7;
+  --low: #dc2626;
+  --low-bg: #fee2e2;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.07),0 4px 16px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--surface);color:var(--text);min-height:100vh;}
+
+nav{background:var(--primary);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
+.nav-brand{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.3px;}
+.nav-brand span{color:var(--accent);}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{background:transparent;border:none;color:rgba(255,255,255,0.7);font-size:14px;font-weight:500;padding:8px 16px;border-radius:8px;cursor:pointer;transition:all 0.18s;font-family:inherit;}
+.nav-tab:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.nav-tab.active{background:rgba(255,255,255,0.15);color:#fff;}
+
+.hero{background:linear-gradient(135deg,var(--primary) 0%,#1e4d8c 60%,#1a3c5e 100%);padding:3rem 2rem 2.5rem;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(249,115,22,0.08) 0%,transparent 60%);}
+.hero h1{font-family:'Sora',sans-serif;font-size:32px;font-weight:700;color:#fff;position:relative;margin-bottom:8px;}
+.hero h1 span{color:var(--accent);}
+.hero p{color:rgba(255,255,255,0.75);font-size:15px;position:relative;margin-bottom:2rem;}
+.hero-stats{display:flex;gap:2rem;justify-content:center;position:relative;}
+.hero-stat .num{font-family:'Sora',sans-serif;font-size:26px;font-weight:700;color:var(--accent);}
+.hero-stat .lbl{font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px;}
+
+.main{max-width:1200px;margin:0 auto;padding:2rem 1.5rem;}
+
+.form-card{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:1.75rem;margin-bottom:2rem;border:1px solid var(--border);}
+.form-card h2{font-size:17px;font-weight:600;color:var(--primary);margin-bottom:1.25rem;}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.field input,.field select{width:100%;height:42px;padding:0 12px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:14px;font-family:inherit;transition:border-color 0.15s,box-shadow 0.15s;}
+.field input:focus,.field select:focus{outline:none;border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(37,99,168,0.1);}
+
+.mode-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.mode-btn{flex:1;min-width:155px;padding:10px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;color:var(--text-muted);transition:all 0.18s;text-align:center;}
+.mode-btn:hover{border-color:var(--primary-light);color:var(--primary);}
+.mode-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.mode-btn .icon{font-size:16px;display:block;margin-bottom:3px;}
+
+.predict-btn{width:100%;padding:13px;font-size:16px;font-weight:600;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;cursor:pointer;font-family:inherit;transition:all 0.18s;box-shadow:0 4px 14px rgba(249,115,22,0.35);}
+.predict-btn:hover{background:#ea6c0a;transform:translateY(-1px);box-shadow:0 6px 20px rgba(249,115,22,0.4);}
+.predict-btn:active{transform:translateY(0);}
+
+.results-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+.results-title{font-size:18px;font-weight:600;color:var(--primary);}
+.results-meta{font-size:13px;color:var(--text-muted);}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;background:var(--card);color:var(--text-muted);font-family:inherit;}
+.chip:hover{border-color:var(--primary);color:var(--primary);}
+.chip.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.chip.high-chip.active{background:var(--high);border-color:var(--high);}
+.chip.med-chip.active{background:var(--med);border-color:var(--med);}
+.chip.low-chip.active{background:var(--low);border-color:var(--low);}
+
+.table-wrap{overflow-x:auto;border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;background:var(--card);font-size:13.5px;}
+thead{background:var(--primary);}
+thead th{color:rgba(255,255,255,0.9);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;padding:12px 14px;text-align:left;white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.12s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:#f8faff;}
+tbody td{padding:11px 14px;vertical-align:middle;}
+.sno{color:var(--text-light);font-size:12px;width:32px;}
+.college-name{font-weight:600;font-size:13.5px;color:var(--primary);}
+.college-sub{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+.branch-tag{display:inline-block;background:#eff6ff;color:#1e40af;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:5px;}
+.cutoff-val{font-weight:600;color:var(--text);}
+.cutoff-trend{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.trend-up{color:var(--low);}
+.trend-dn{color:var(--high);}
+.chance-pill{display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;}
+.chance-pill.high{background:var(--high-bg);color:var(--high);}
+.chance-pill.medium{background:var(--med-bg);color:var(--med);}
+.chance-pill.low{background:var(--low-bg);color:var(--low);}
+
+.empty{text-align:center;padding:4rem 2rem;color:var(--text-muted);}
+.empty-icon{font-size:48px;margin-bottom:1rem;}
+.empty p{font-size:15px;}
+
+.trend-card{background:var(--card);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:16px;}
+.trend-card h3{font-size:15px;font-weight:600;color:var(--primary);margin-bottom:4px;}
+.trend-card .tc-meta{font-size:12px;color:var(--text-muted);margin-bottom:1rem;}
+.bar-row{display:flex;gap:6px;align-items:flex-end;height:90px;margin-bottom:6px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.bar-fill{width:100%;border-radius:4px 4px 0 0;min-height:4px;}
+.bar-val{font-size:10px;color:var(--text-muted);font-weight:500;}
+.bar-yr{font-size:10px;color:var(--text-light);}
+
+.page{display:none;}
+.page.active{display:block;}
+
+.about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+.about-card{background:var(--card);border-radius:var(--radius-lg);border:1px solid var(--border);padding:1.5rem;box-shadow:var(--shadow);}
+.about-card .icon-circle{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:20px;}
+.about-card h3{font-size:15px;font-weight:600;color:var(--primary);margin-bottom:6px;}
+.about-card p{font-size:13.5px;color:var(--text-muted);line-height:1.6;}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px;}
+
+@media(max-width:640px){
+  nav{padding:0 1rem;}
+  .nav-tabs{display:none;}
+  .hero{padding:2rem 1rem 1.5rem;}
+  .hero h1{font-size:22px;}
+  .hero-stats{gap:1rem;}
+  .main{padding:1.2rem 1rem;}
+  .form-card{padding:1.25rem;}
+  .form-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Find My <span>College</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('predictor',this)">🔍 Predictor</button>
+    <button class="nav-tab" onclick="showPage('trends',this)">📈 Cutoff Trends</button>
+    <button class="nav-tab" onclick="showPage('about',this)">ℹ️ About</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>TS EAMCET <span>College Predictor</span></h1>
+  <p>Enter your rank · Find eligible colleges · Explore cutoff trends (2016–2024)</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">40+</div><div class="lbl">Sample Colleges</div></div>
+    <div class="hero-stat"><div class="num">9</div><div class="lbl">Years Data</div></div>
+    <div class="hero-stat"><div class="num">8</div><div class="lbl">Categories</div></div>
+    <div class="hero-stat"><div class="num">Free</div><div class="lbl">No Login</div></div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ══════════ PREDICTOR PAGE ══════════ -->
+<div id="page-predictor" class="page active">
+
+  <div class="form-card">
+    <h2>🎯 Enter Your Details</h2>
+
+    <div class="mode-row">
+      <button class="mode-btn active" id="mode-all" onclick="setMode('all')">
+        <span class="icon">🏆</span>Best Colleges (Any Branch)
+      </button>
+      <button class="mode-btn" id="mode-branch" onclick="setMode('branch')">
+        <span class="icon">🎓</span>By Preferred Branch
+      </button>
+      <button class="mode-btn" id="mode-college" onclick="setMode('college')">
+        <span class="icon">🏫</span>Best Branches at a College
+      </button>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Your EAMCET Rank</label>
+        <input type="number" id="rank" placeholder="e.g. 5000" min="1" max="200000"/>
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <select id="category">
+          <option value="OC">OC (Open Category)</option>
+          <option value="BC_A">BC-A</option>
+          <option value="BC_B">BC-B</option>
+          <option value="BC_C">BC-C</option>
+          <option value="BC_D">BC-D</option>
+          <option value="BC_E">BC-E</option>
+          <option value="SC">SC</option>
+          <option value="ST">ST</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Quota</label>
+        <select id="quota">
+          <option value="OU">OU (Osmania University)</option>
+          <option value="AU">AU (Andhra University)</option>
+          <option value="SVU">SVU</option>
+          <option value="MGMT">Management Quota</option>
+          <option value="NRI">NRI Quota</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>District Preference</label>
+        <select id="district">
+          <option value="ALL">All Districts</option>
+          <option value="Hyderabad">Hyderabad</option>
+          <option value="Warangal">Warangal</option>
+          <option value="Karimnagar">Karimnagar</option>
+          <option value="Khammam">Khammam</option>
+          <option value="Nizamabad">Nizamabad</option>
+          <option value="Nalgonda">Nalgonda</option>
+          <option value="Mahabubnagar">Mahabubnagar</option>
+          <option value="Adilabad">Adilabad</option>
+        </select>
+      </div>
+      <div class="field" id="branch-field" style="display:none;">
+        <label>Preferred Branch</label>
+        <select id="branch">
+          <option value="CSE">Computer Science (CSE)</option>
+          <option value="CSE-DS">CSE (Data Science)</option>
+          <option value="CSE-AI">CSE (AI)</option>
+          <option value="AIDS">AI &amp; Data Science</option>
+          <option value="AIML">AI &amp; Machine Learning</option>
+          <option value="IT">Information Technology</option>
+          <option value="ECE">Electronics &amp; Comm (ECE)</option>
+          <option value="EEE">Electrical &amp; Electronics</option>
+          <option value="MECH">Mechanical Engineering</option>
+          <option value="CIVIL">Civil Engineering</option>
+          <option value="CHEM">Chemical Engineering</option>
+          <option value="BIOTECH">Biotechnology</option>
+        </select>
+      </div>
+      <div class="field" id="college-field" style="display:none;">
+        <label>College Name (search)</label>
+        <input type="text" id="collegeSearch" placeholder="e.g. JNTUH, CBIT, VNR..."/>
+      </div>
+    </div>
+
+    <button class="predict-btn" onclick="predict()">🔍 Find My College</button>
+  </div>
+
+  <!-- Results -->
+  <div id="results-area" style="display:none;">
+    <div class="results-toolbar">
+      <div>
+        <div class="results-title" id="results-title">Results</div>
+        <div class="results-meta" id="results-meta"></div>
+      </div>
+      <div class="filter-row" id="filter-row">
+        <button class="chip active" data-f="ALL" onclick="filterResult(this)">All</button>
+        <button class="chip high-chip" data-f="high" onclick="filterResult(this)">✅ High Chance</button>
+        <button class="chip med-chip" data-f="medium" onclick="filterResult(this)">⚠️ Medium</button>
+        <button class="chip low-chip" data-f="low" onclick="filterResult(this)">🔴 Low</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>College</th>
+            <th>Branch</th>
+            <th>District</th>
+            <th>2024 Cutoff</th>
+            <th>9yr Avg</th>
+            <th>Trend</th>
+            <th>Your Chance</th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-light);margin-top:10px;text-align:center;">
+      ⚠️ Based on historical cutoffs 2016–2024. Actual admissions depend on current counselling. Add your full dataset to the DATA array in the script.
+    </p>
+  </div>
+
+  <div id="empty-state" class="empty" style="display:none;">
+    <div class="empty-icon">😕</div>
+    <p>No colleges found for your rank and filters.<br/>
+    <span style="font-size:13px">Try a different category, remove district filter, or switch mode.</span></p>
+  </div>
+
+  <div id="initial-state" class="empty">
+    <div class="empty-icon">🎓</div>
+    <p>Enter your EAMCET rank and click <strong>Find My College</strong></p>
+  </div>
+
+</div><!-- /predictor -->
+
+<!-- ══════════ TRENDS PAGE ══════════ -->
+<div id="page-trends" class="page">
+  <div class="form-card">
+    <h2>📈 Year-wise Cutoff Trends</h2>
+    <div class="form-grid" style="margin-bottom:0;">
+      <div class="field">
+        <label>Select College</label>
+        <select id="trend-college" onchange="renderTrends()">
+          <option value="">-- Select a College --</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Branch</label>
+        <select id="trend-branch" onchange="renderTrends()">
+          <option value="ALL">All Branches</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <select id="trend-cat" onchange="renderTrends()">
+          <option value="OC">OC</option>
+          <option value="BC_A">BC-A</option>
+          <option value="BC_B">BC-B</option>
+          <option value="SC">SC</option>
+          <option value="ST">ST</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="trend-results"></div>
+  <div id="trend-empty" class="empty">
+    <div class="empty-icon">📊</div>
+    <p>Select a college above to view year-wise cutoff bar charts</p>
+  </div>
+</div>
+
+<!-- ══════════ ABOUT PAGE ══════════ -->
+<div id="page-about" class="page">
+  <div style="margin-bottom:1.5rem;">
+    <h2 style="font-size:22px;font-weight:700;color:var(--primary);margin-bottom:6px;">Find My College</h2>
+    <p style="color:var(--text-muted);font-size:14px;">Minor Project · 2026/Minor/A/02 · Guide: Dr K. Sai Madhuri, Asst. Professor, CSE (Data Science)</p>
+  </div>
+  <div class="about-grid" style="margin-bottom:1.5rem;">
+    <div class="about-card">
+      <div class="icon-circle">🧠</div>
+      <h3>Smart Prediction</h3>
+      <p>Uses 9 years of TS EAMCET cutoff data (2016–2024) to classify your admission probability as High, Medium, or Low based on historical closing ranks.</p>
+    </div>
+    <div class="about-card">
+      <div class="icon-circle">📊</div>
+      <h3>Cutoff Trends</h3>
+      <p>Visualize year-wise bar charts for any college &amp; branch to understand if competition is rising or falling — helping you make strategic choices.</p>
+    </div>
+    <div class="about-card">
+      <div class="icon-circle">🎯</div>
+      <h3>3 Search Modes</h3>
+      <p>Find best colleges regardless of branch, search by your preferred branch, or see all branches available at a specific college for your rank.</p>
+    </div>
+    <div class="about-card">
+      <div class="icon-circle">🗂️</div>
+      <h3>All Categories</h3>
+      <p>Supports OC, BC-A, BC-B, BC-C, BC-D, BC-E, SC, ST with category-specific cutoff data and district-wise filtering.</p>
+    </div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;">
+    <h3 style="font-size:15px;font-weight:600;color:var(--primary);margin-bottom:10px;">📁 How to plug in your real dataset</h3>
+    <p style="font-size:13.5px;color:var(--text-muted);line-height:1.8;">
+      Open this HTML file, scroll to the <code>&lt;script&gt;</code> section and find <code>const DATA = [...]</code>. Each entry looks like:<br/><br/>
+      <code style="display:block;padding:10px 14px;border-radius:8px;line-height:2;font-size:12.5px;">
+        { college: "Full College Name", short: "Short, Location", branch: "CSE",<br/>
+        &nbsp;&nbsp;district: "Hyderabad", type: "Government",<br/>
+        &nbsp;&nbsp;cutoffs: {<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;OC:&nbsp;&nbsp;[2016_rank, 2017_rank, ..., 2024_rank],<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;SC:&nbsp;&nbsp;[2016_rank, ..., 2024_rank],<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;BC_A:[2016_rank, ..., 2024_rank]<br/>
+        &nbsp;&nbsp;}}<br/>
+      </code><br/>
+      Replace the sample rows with your 2016–2024 CSV. For 2025 data (not yet released): use the average of 2022–2024 as an estimate and note it in the UI disclaimer.
+    </p>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+const YEARS = [2016,2017,2018,2019,2020,2021,2022,2023,2024];
+
+// ═══════════════════════════════════════════════════════════
+// DATA — Replace with your full 2016-2024 dataset
+// cutoffs arrays: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+// ═══════════════════════════════════════════════════════════
+const DATA = [
+  {college:"JNTUH College of Engineering",short:"JNTUH CEH, Kukatpally",branch:"CSE",district:"Hyderabad",type:"Government",
+   cutoffs:{OC:[700,720,680,740,800,770,730,760,780],SC:[2800,3000,2700,2900,3200,3100,2850,2950,3050],BC_A:[1400,1500,1350,1450,1600,1550,1420,1480,1520],BC_B:[1200,1300,1150,1250,1400,1350,1220,1280,1320]}},
+  {college:"JNTUH College of Engineering",short:"JNTUH CEH, Kukatpally",branch:"ECE",district:"Hyderabad",type:"Government",
+   cutoffs:{OC:[1800,1900,1750,1850,2000,1950,1820,1880,1920],SC:[5500,5800,5300,5600,6000,5900,5450,5700,5850],BC_A:[3200,3400,3100,3300,3600,3500,3250,3350,3450]}},
+  {college:"JNTUH College of Engineering",short:"JNTUH CEH, Kukatpally",branch:"EEE",district:"Hyderabad",type:"Government",
+   cutoffs:{OC:[4500,4800,4300,4600,5000,4900,4400,4700,4850],SC:[9000,9500,8700,9200,10000,9800,8900,9300,9600]}},
+  {college:"JNTUH College of Engineering",short:"JNTUH CEH, Kukatpally",branch:"MECH",district:"Hyderabad",type:"Government",
+   cutoffs:{OC:[7000,7400,6800,7100,7700,7500,6900,7200,7450],SC:[14000,14800,13600,14300,15400,15100,13800,14500,14900]}},
+  {college:"Osmania University CEG",short:"OU CEG, Amberpet",branch:"CSE",district:"Hyderabad",type:"Government",
+   cutoffs:{OC:[600,620,580,610,660,640,595,625,645],SC:[2200,2300,2100,2200,2400,2350,2150,2250,2320],BC_A:[1100,1150,1050,1100,1200,1180,1080,1130,1160]}},
+  {college:"Osmania University CEG",short:"OU CEG, Amberpet",branch:"ECE",district:"Hyderabad",type:"Government",
+   cutoffs:{OC:[1400,1450,1350,1400,1500,1480,1380,1430,1460],SC:[4200,4400,4100,4200,4500,4450,4150,4300,4400]}},
+  {college:"Osmania University CEG",short:"OU CEG, Amberpet",branch:"MECH",district:"Hyderabad",type:"Government",
+   cutoffs:{OC:[5000,5300,4800,5100,5600,5400,4900,5200,5400],SC:[10000,10500,9700,10200,11000,10800,9900,10400,10700]}},
+  {college:"CBIT, Hyderabad",short:"CBIT, Gandipet",branch:"CSE",district:"Hyderabad",type:"Private-Aided",
+   cutoffs:{OC:[2500,2700,2400,2600,2900,2800,2550,2650,2750],SC:[7000,7400,6800,7100,7700,7500,6900,7200,7450],BC_A:[4000,4300,3900,4100,4500,4400,4050,4200,4350]}},
+  {college:"CBIT, Hyderabad",short:"CBIT, Gandipet",branch:"ECE",district:"Hyderabad",type:"Private-Aided",
+   cutoffs:{OC:[4000,4200,3800,4000,4400,4300,3900,4100,4250],SC:[9500,10000,9200,9700,10500,10300,9400,9800,10100]}},
+  {college:"CBIT, Hyderabad",short:"CBIT, Gandipet",branch:"EEE",district:"Hyderabad",type:"Private-Aided",
+   cutoffs:{OC:[8000,8400,7700,8100,8800,8600,7900,8200,8500],SC:[16000,17000,15500,16500,18000,17500,16000,16800,17200]}},
+  {college:"CBIT, Hyderabad",short:"CBIT, Gandipet",branch:"MECH",district:"Hyderabad",type:"Private-Aided",
+   cutoffs:{OC:[10000,10500,9700,10200,11000,10800,9900,10300,10700],SC:[20000,21000,19500,20500,22000,21500,20000,20800,21400]}},
+  {college:"VNR VJIET",short:"VNR VJIET, Bachupally",branch:"CSE",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[3000,3200,2900,3100,3400,3300,3050,3150,3250],SC:[8000,8500,7800,8200,8900,8700,8100,8400,8650]}},
+  {college:"VNR VJIET",short:"VNR VJIET, Bachupally",branch:"AIDS",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[3500,3700,3400,3600,3900,3800,3550,3650,3750],SC:[9000,9500,8700,9200,9900,9700,8900,9300,9600]}},
+  {college:"VNR VJIET",short:"VNR VJIET, Bachupally",branch:"AIML",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[3800,4000,3700,3900,4200,4100,3850,3950,4050],SC:[9500,10000,9200,9700,10400,10200,9400,9800,10100]}},
+  {college:"VNR VJIET",short:"VNR VJIET, Bachupally",branch:"ECE",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[5500,5800,5300,5600,6100,5900,5450,5700,5900],SC:[12000,12600,11600,12100,13100,12800,11800,12300,12700]}},
+  {college:"Gokaraju Rangaraju IT",short:"GRIET, Bachupally",branch:"CSE",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[4500,4800,4300,4600,5000,4900,4450,4700,4850],SC:[10500,11000,10100,10700,11500,11300,10300,10800,11100]}},
+  {college:"Gokaraju Rangaraju IT",short:"GRIET, Bachupally",branch:"IT",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[5500,5800,5300,5600,6100,5900,5450,5700,5900],SC:[12000,12600,11600,12100,13000,12800,11800,12300,12700]}},
+  {college:"Gokaraju Rangaraju IT",short:"GRIET, Bachupally",branch:"ECE",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[7000,7400,6800,7100,7700,7500,6900,7200,7450],SC:[14000,14800,13600,14300,15400,15100,13800,14500,14900]}},
+  {college:"Vasavi College of Engineering",short:"Vasavi CE, Ibrahimbagh",branch:"CSE",district:"Hyderabad",type:"Private-Aided",
+   cutoffs:{OC:[3800,4000,3700,3900,4300,4200,3850,4000,4150],SC:[9200,9700,8900,9400,10200,10000,9100,9500,9800]}},
+  {college:"Vasavi College of Engineering",short:"Vasavi CE, Ibrahimbagh",branch:"ECE",district:"Hyderabad",type:"Private-Aided",
+   cutoffs:{OC:[5800,6100,5600,5900,6400,6300,5750,6000,6200],SC:[12500,13200,12100,12800,13800,13500,12300,12900,13300]}},
+  {college:"MGIT, Hyderabad",short:"MGIT, Gandipet",branch:"CSE",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[5000,5300,4800,5100,5600,5400,4950,5200,5400],SC:[11000,11600,10700,11200,12100,11800,10900,11400,11700]}},
+  {college:"MGIT, Hyderabad",short:"MGIT, Gandipet",branch:"IT",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[6000,6300,5800,6100,6600,6400,5950,6200,6400],SC:[13000,13700,12600,13200,14200,13900,12900,13400,13800]}},
+  {college:"Sreenidhi Institute of Science and Tech",short:"SNIST, Yamnampet",branch:"CSE",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[6000,6300,5800,6100,6600,6400,5950,6200,6400],SC:[13500,14200,13100,13800,14800,14600,13400,14000,14400]}},
+  {college:"Sreenidhi Institute of Science and Tech",short:"SNIST, Yamnampet",branch:"CSE-AI",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[7000,7400,6800,7100,7700,7500,6950,7200,7450],SC:[15000,15800,14600,15300,16400,16100,14900,15600,16000]}},
+  {college:"BVRIT Hyderabad",short:"BVRIT, Narsapur",branch:"CSE",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[8000,8400,7700,8100,8800,8600,7950,8300,8550],SC:[17000,17900,16600,17300,18600,18300,16900,17600,18100]}},
+  {college:"BVRIT Hyderabad",short:"BVRIT, Narsapur",branch:"AIDS",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[9000,9400,8700,9100,9800,9600,8950,9300,9550],SC:[19000,20000,18500,19300,20700,20400,18900,19600,20100]}},
+  {college:"Malla Reddy Engineering College",short:"MREC, Maisammaguda",branch:"CSE",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[12000,12600,11600,12100,13100,12800,11900,12400,12800],SC:[24000,25200,23300,24500,26200,25800,23800,24900,25600]}},
+  {college:"Malla Reddy Engineering College",short:"MREC, Maisammaguda",branch:"AIDS",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[14000,14700,13600,14200,15200,15000,13900,14500,14900],SC:[27000,28400,26300,27600,29500,29000,26800,28000,28800]}},
+  {college:"SR Engineering College",short:"SREC, Warangal",branch:"CSE",district:"Warangal",type:"Private-Unaided",
+   cutoffs:{OC:[8000,8400,7700,8100,8800,8600,7950,8300,8550],SC:[17000,17900,16600,17300,18600,18300,16900,17600,18100]}},
+  {college:"SR Engineering College",short:"SREC, Warangal",branch:"ECE",district:"Warangal",type:"Private-Unaided",
+   cutoffs:{OC:[11000,11600,10700,11200,12100,11800,10900,11400,11700],SC:[22000,23200,21400,22500,24200,23800,21900,22900,23600]}},
+  {college:"Kakatiya Institute of Technology",short:"KIT, Warangal",branch:"CSE",district:"Warangal",type:"Government",
+   cutoffs:{OC:[5500,5800,5300,5600,6100,5900,5450,5700,5900],SC:[12000,12600,11600,12100,13100,12800,11800,12300,12700]}},
+  {college:"Kakatiya Institute of Technology",short:"KIT, Warangal",branch:"ECE",district:"Warangal",type:"Government",
+   cutoffs:{OC:[9000,9400,8700,9100,9800,9600,8950,9300,9550],SC:[18000,19000,17500,18300,19700,19400,17900,18700,19200]}},
+  {college:"NIT Warangal",short:"NIT Warangal",branch:"CSE",district:"Warangal",type:"Government-NIT",
+   cutoffs:{OC:[200,210,195,205,220,215,202,208,213],SC:[700,740,680,710,760,745,695,725,745]}},
+  {college:"NIT Warangal",short:"NIT Warangal",branch:"ECE",district:"Warangal",type:"Government-NIT",
+   cutoffs:{OC:[450,470,440,460,490,480,455,468,475],SC:[1400,1480,1360,1430,1540,1510,1380,1460,1500]}},
+  {college:"KL University",short:"KL University, Hyderabad",branch:"CSE",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[5500,5800,5300,5600,6100,5900,5450,5700,5900],SC:[13000,13700,12600,13200,14200,13900,12900,13400,13800]}},
+  {college:"KL University",short:"KL University, Hyderabad",branch:"CSE-DS",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[6500,6800,6300,6600,7100,6900,6450,6700,6900],SC:[14500,15300,14100,14800,15900,15600,14400,15100,15500]}},
+  {college:"Mahatma Gandhi Institute of Tech",short:"MGIT, Kokapet",branch:"AIML",district:"Hyderabad",type:"Private-Unaided",
+   cutoffs:{OC:[7500,7900,7300,7700,8300,8100,7450,7800,8050],SC:[16000,16900,15600,16400,17600,17300,15900,16600,17100]}},
+  {college:"Vaagdevi College of Engineering",short:"VCE, Warangal",branch:"CSE",district:"Warangal",type:"Private-Unaided",
+   cutoffs:{OC:[15000,15800,14600,15300,16400,16100,14900,15600,16000],SC:[29000,30600,28200,29800,32000,31500,28800,30200,31100]}},
+  {college:"Aurora's Engineering College",short:"Aurora's EC, Bhongir",branch:"MECH",district:"Nalgonda",type:"Private-Unaided",
+   cutoffs:{OC:[28000,29500,27200,28700,30800,30300,27700,29100,30000],SC:[50000,52800,48700,51400,55100,54200,49600,52100,53700]}},
+  {college:"Chaitanya Bharathi IT",short:"CBIT (Anantapur Branch)",branch:"CIVIL",district:"Hyderabad",type:"Private-Aided",
+   cutoffs:{OC:[18000,19000,17500,18300,19700,19400,17900,18700,19200],SC:[35000,37000,34000,36000,38500,38000,34800,36500,37500]}},
+  {college:"Samara Institute of Technology",short:"SMRT, Karimnagar",branch:"CSE",district:"Karimnagar",type:"Private-Unaided",
+   cutoffs:{OC:[20000,21000,19500,20500,22000,21500,20000,20800,21400],SC:[38000,40000,37000,39000,42000,41000,38000,39800,41000]}},
+];
+
+// ─────────────────────────────────────────────
+// State
+let mode = 'all';
+let allResults = [];
+let currentFilter = 'ALL';
+
+// ─────────────────────────────────────────────
+function setMode(m) {
+  mode = m;
+  ['all','branch','college'].forEach(x => document.getElementById('mode-'+x).classList.toggle('active', x===m));
+  document.getElementById('branch-field').style.display = m==='branch' ? '' : 'none';
+  document.getElementById('college-field').style.display = m==='college' ? '' : 'none';
+}
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if (id==='trends') populateTrendDropdowns();
+}
+
+function getCutoffs(row, cat) { return row.cutoffs[cat] || row.cutoffs['OC']; }
+function avg(vals) { return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length); }
+function last(vals) { return vals[vals.length-1]; }
+function trendScore(vals) {
+  const r = vals.slice(-3), o = vals.slice(0,3);
+  return r.reduce((a,b)=>a+b,0)/3 - o.reduce((a,b)=>a+b,0)/3;
+}
+function getChance(rank, lastVal) {
+  const buf = (lastVal - rank) / lastVal;
+  if (buf > 0.20) return 'high';
+  if (buf > 0.02) return 'medium';
+  if (buf > -0.12) return 'low';
+  return null;
+}
+
+function predict() {
+  const rank = parseInt(document.getElementById('rank').value);
+  const cat = document.getElementById('category').value;
+  const district = document.getElementById('district').value;
+  const branchSel = document.getElementById('branch').value;
+  const colQ = document.getElementById('collegeSearch').value.toLowerCase().trim();
+
+  if (!rank || rank < 1) { alert('Please enter a valid rank'); return; }
+
+  document.getElementById('initial-state').style.display = 'none';
+  allResults = [];
+
+  for (const row of DATA) {
+    if (district !== 'ALL' && row.district !== district) continue;
+    if (mode === 'branch' && row.branch !== branchSel) continue;
+    if (mode === 'college' && colQ && !row.college.toLowerCase().includes(colQ) && !row.short.toLowerCase().includes(colQ)) continue;
+
+    const vals = getCutoffs(row, cat);
+    const lv = last(vals);
+    const av = avg(vals);
+    const chance = getChance(rank, lv);
+    if (chance) allResults.push({...row, lv, av, chance, vals, ts: trendScore(vals)});
+  }
+
+  allResults.sort((a,b) => {const o={high:0,medium:1,low:2}; return o[a.chance]-o[b.chance]||a.lv-b.lv;});
+  currentFilter = 'ALL';
+  document.querySelectorAll('#filter-row .chip').forEach(c => c.classList.toggle('active', c.dataset.f==='ALL'));
+
+  const modeLabel = {all:'Best Colleges (Any Branch)', branch:'Colleges for '+branchSel, college:'Branches at searched college'}[mode];
+  document.getElementById('results-title').textContent = modeLabel;
+  document.getElementById('results-meta').textContent = `Rank ${rank.toLocaleString()} · Category: ${cat} · ${allResults.length} result${allResults.length!==1?'s':''}`;
+  renderTable(allResults);
+}
+
+function filterResult(btn) {
+  currentFilter = btn.dataset.f;
+  document.querySelectorAll('#filter-row .chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable(currentFilter==='ALL' ? allResults : allResults.filter(r=>r.chance===currentFilter));
+}
+
+function renderTable(rows) {
+  const tbody = document.getElementById('results-body');
+  const area = document.getElementById('results-area');
+  const empty = document.getElementById('empty-state');
+
+  if (!rows.length) { area.style.display='none'; empty.style.display='block'; return; }
+  empty.style.display='none'; area.style.display='block';
+
+  const trendHTML = v => v>300 ? '<span class="trend-up">↑ Rising</span>' : v<-300 ? '<span class="trend-dn">↓ Falling</span>' : '<span style="color:var(--text-light)">→ Stable</span>';
+  const chanceHTML = c => `<span class="chance-pill ${c}">${{high:'✅ High',medium:'⚠️ Medium',low:'🔴 Low'}[c]}</span>`;
+
+  tbody.innerHTML = rows.map((r,i) => `
+    <tr>
+      <td class="sno">${i+1}</td>
+      <td>
+        <div class="college-name">${r.college}</div>
+        <div class="college-sub">${r.short} · <span style="color:var(--primary-light)">${r.type}</span></div>
+      </td>
+      <td><span class="branch-tag">${r.branch}</span></td>
+      <td style="color:var(--text-muted);font-size:13px;">${r.district}</td>
+      <td><div class="cutoff-val">${r.lv.toLocaleString()}</div><div class="cutoff-trend">(2024)</div></td>
+      <td><div class="cutoff-val">${r.av.toLocaleString()}</div><div class="cutoff-trend">9yr avg</div></td>
+      <td style="font-size:12.5px;">${trendHTML(r.ts)}</td>
+      <td>${chanceHTML(r.chance)}</td>
+    </tr>`).join('');
+}
+
+// ─── TRENDS ──────────────────────────────────
+function populateTrendDropdowns() {
+  const cols = [...new Set(DATA.map(d=>d.college))].sort();
+  const sel = document.getElementById('trend-college');
+  sel.innerHTML = '<option value="">-- Select a College --</option>' + cols.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function renderTrends() {
+  const col = document.getElementById('trend-college').value;
+  const brSel = document.getElementById('trend-branch').value;
+  const cat = document.getElementById('trend-cat').value;
+  const container = document.getElementById('trend-results');
+  const empty = document.getElementById('trend-empty');
+
+  if (!col) { container.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  const branches = [...new Set(DATA.filter(d=>d.college===col).map(d=>d.branch))];
+  const brEl = document.getElementById('trend-branch');
+  const prevBr = brEl.value;
+  brEl.innerHTML = '<option value="ALL">All Branches</option>' + branches.map(b=>`<option value="${b}" ${b===prevBr?'selected':''}>${b}</option>`).join('');
+
+  const rows = DATA.filter(d => d.college===col && (brSel==='ALL'||d.branch===brSel));
+  if (!rows.length) { container.innerHTML='<p style="padding:1rem;color:var(--text-muted)">No data for this selection.</p>'; return; }
+
+  container.innerHTML = rows.map(row => {
+    const vals = getCutoffs(row, cat);
+    const maxV = Math.max(...vals), minV = Math.min(...vals), rng = maxV-minV||1;
+    const bars = YEARS.map((yr,i) => {
+      const h = Math.round(((vals[i]-minV)/rng)*60+10);
+      const isLast = i===YEARS.length-1;
+      return `<div class="bar-col">
+        <div class="bar-val">${vals[i]>=1000?(vals[i]/1000).toFixed(1)+'k':vals[i]}</div>
+        <div class="bar-fill" style="height:${h}px;background:${isLast?'var(--accent)':'var(--primary-light)'};opacity:${isLast?1:0.7}"></div>
+        <div class="bar-yr">${yr}</div>
+      </div>`;
+    }).join('');
+    const t = trendScore(vals);
+    const tStr = t>300?'↑ Cutoff rising — competition increasing':t<-300?'↓ Cutoff falling — easier trend':'→ Relatively stable over years';
+    return `<div class="trend-card">
+      <h3>${row.college} · <span style="color:var(--accent)">${row.branch}</span></h3>
+      <div class="tc-meta">Category: ${cat} &nbsp;·&nbsp; ${tStr} &nbsp;·&nbsp; 2024 cutoff: <strong>${last(vals).toLocaleString()}</strong></div>
+      <div class="bar-row">${bars}</div>
+    </div>`;
+  }).join('');
+}
+
+// Init
+setMode('all');
+</script>
+</body>
+</html>
