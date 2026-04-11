@@ -1150,13 +1150,24 @@ async function generateStrategy() {
   const rank     = document.getElementById('rank').value;
   const category = document.getElementById('category').value;
   const gender   = document.getElementById('gender').value;
-  const branch   = currentMode === 'branch' ? document.getElementById('branch').value : '';
-
-  const res  = await fetch('/api/strategy', {
+  let branch = '';
+if (currentMode === 'branch') {
+    branch = document.getElementById('branch').value;
+} else if (currentMode === 'any') {
+    branch = 'ENGINEERING';
+} else if (currentMode === 'college') {
+    branch = document.getElementById('collegeSearch').value.trim();
+}
+const res = await fetch('/api/strategy', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ rank, category, gender, branch })
-  });
+    body: JSON.stringify({ 
+        rank: parseInt(rank), 
+        category, 
+        gender, 
+        branch 
+    })
+});
   const s = await res.json();
 
   const riskColors = { LOW: '#10b981', MEDIUM: '#f59e0b', HIGH: '#ef4444' };
