@@ -141,6 +141,10 @@ def predict_colleges(rank, category, gender, branch, limit=50):
 
 
             'probability' : probability,
+            'yearly_data': [
+    {'year': yr, 'rank': rk} 
+    for yr, rk in sorted(year_ranks)
+],
 
 
         })
