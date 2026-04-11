@@ -216,6 +216,30 @@ def get_categories():
     conn.close()
     categories = [r['category'] for r in rows]
     return jsonify(categories)
+@app.route('/api/trends', methods=['GET'])
+def get_trends():
+    inst_code = request.args.get('inst_code', '')
+    branch    = request.args.get('branch', '')
+    category  = request.args.get('category', 'OC')
+    gender    = request.args.get('gender', 'BOYS')
+
+    conn = get_db()
+    cursor = conn.cursor()
+    rows = cursor.execute('''
+        SELECT year, closing_rank
+        FROM cutoffs
+        WHERE inst_code = ?
+          AND branch_name LIKE ?
+          AND category = ?
+          AND gender = ?
+        ORDER BY year ASC
+    ''', (inst_code, f'%{branch}%', category, gender)).fetchall()
+    conn.close()
+
+    return jsonify([{'year': r['year'], 'rank': r['closing_rank']} for r in rows])
+
+
+
 
 
 # ============================================================
