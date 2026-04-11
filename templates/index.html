@@ -677,8 +677,24 @@ footer {
         </div>
       </div>
     </div>
+<div style="padding:0 28px 28px">
+        <button id="strategyBtn" style="display:none;width:100%;padding:14px;background:var(--navy);color:var(--white);border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;letter-spacing:0.3px" onclick="generateStrategy()">
+          🧭 Generate My Counselling Strategy
+        </button>
+      </div>
+    </div><!-- end results panel -->
 
-  </div><!-- end predictorSection -->
+  <!-- STRATEGY PANEL -->
+<div id="strategyPanel" style="display:none">
+  <div class="panel">
+    <div class="panel-header" style="padding-bottom:16px">
+      <span style="font-size:1.2rem">🧭</span>
+      <span class="panel-title">Your Counselling Strategy</span>
+      <span id="riskBadge" style="margin-left:auto;padding:4px 14px;border-radius:20px;font-size:0.8rem;font-weight:700"></span>
+    </div>
+    <div id="strategyContent" style="padding:0 28px 28px"></div>
+  </div>
+</div>
 
   <!-- ═══ TRENDS SECTION ═══ -->
   <div id="trendsSection">
@@ -719,6 +735,8 @@ footer {
         </div>
         <div class="form-group" style="display:flex; align-items:flex-end">
           <button class="predict-btn" style="margin:0;width:100%" onclick="loadTrend()">Load Chart</button>
+         
+
         </div>
       </div>
       <div class="trend-summary" id="trendSummary" style="display:none"></div>
@@ -885,7 +903,10 @@ function renderResults(data) {
   document.querySelectorAll('.cf-btn')[0].className = 'cf-btn active-all';
 
   renderTable(allResults);
+  document.getElementById('strategyBtn').style.display = 'block';
 }
+  
+
 
 function renderTable(rows) {
   const tbody = document.getElementById('tableBody');
@@ -1125,11 +1146,71 @@ function hideResults() {
   document.getElementById('tableWrap').classList.remove('show');
 }
 
+async function generateStrategy() {
+  const rank     = document.getElementById('rank').value;
+  const category = document.getElementById('category').value;
+  const gender   = document.getElementById('gender').value;
+  const branch   = currentMode === 'branch' ? document.getElementById('branch').value : '';
+
+  const res  = await fetch('/api/strategy', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rank, category, gender, branch })
+  });
+  const s = await res.json();
+
+  const riskColors = { LOW: '#10b981', MEDIUM: '#f59e0b', HIGH: '#ef4444' };
+  const badge = document.getElementById('riskBadge');
+  badge.textContent = `${s.risk_level} RISK`;
+  badge.style.background = riskColors[s.risk_level] + '20';
+  badge.style.color = riskColors[s.risk_level];
+  badge.style.border = `1px solid ${riskColors[s.risk_level]}`;
+
+  const makeCards = (list, emoji) => list.map(r => `
+    <div style="padding:14px;background:var(--gray50);border-radius:10px;border:1px solid var(--gray200);margin-bottom:10px">
+      <div style="font-weight:700;font-size:0.92rem">${emoji} ${r.college_name}</div>
+      <div style="font-size:0.8rem;color:var(--gray600);margin-top:4px">
+        ${r.branch_name.split('(')[0].trim()} · Avg Cutoff: <strong>${r.avg_cutoff.toLocaleString()}</strong> · ${r.trend} · ${r.years_count} years data
+      </div>
+    </div>
+  `).join('') || '<div style="color:var(--gray400);font-size:0.85rem;padding:10px 0">None available</div>';
+
+  document.getElementById('strategyContent').innerHTML = `
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:0.88rem;color:#166534">
+      📊 ${s.summary}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:12px">✅ Round 1 — Lock These In</div>
+        ${makeCards(s.round1, '🔒')}
+      </div>
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--amber);margin-bottom:12px">🎯 Round 2 — Aim Higher</div>
+        ${makeCards(s.round2, '🎯')}
+      </div>
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:12px">🔥 Spot Admission — Dream Shots</div>
+        ${makeCards(s.spot, '🔥')}
+      </div>
+    </div>
+    ${s.skip.length ? `
+    <div style="margin-top:20px;padding:14px;background:#fef9c3;border:1px solid #fde047;border-radius:10px">
+      <div style="font-size:0.82rem;font-weight:700;color:#854d0e;margin-bottom:8px">⚠️ Skip These (Unreliable Data — Only 1 Year)</div>
+      ${s.skip.map(r => `<div style="font-size:0.8rem;color:#92400e;margin-bottom:4px">• ${r.college_name} — ${r.branch_name.split('(')[0].trim()}</div>`).join('')}
+    </div>` : ''}
+  `;
+
+  document.getElementById('strategyPanel').style.display = 'block';
+  document.getElementById('strategyPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
 // Enter key
 document.addEventListener('keypress', e => { if (e.key === 'Enter') predict(); });
 
 // Init
-window.onload = loadBranches;
+window.addEventListener('load', function() {
+    loadBranches();
+});
 </script>
 </body>
 </html>

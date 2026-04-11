@@ -87,7 +87,7 @@ def predict_colleges(rank, category, gender, branch, limit=50):
 
         # Skip colleges where cutoff is more than 5x the student rank
         # These are irrelevant results
-        if avg_cutoff > rank * 5 or avg_cutoff < rank * 0.2:
+        if avg_cutoff > rank * 2.5 or avg_cutoff < rank * 0.4:
             continue
 
         ratio = rank / avg_cutoff
@@ -149,7 +149,7 @@ def predict_colleges(rank, category, gender, branch, limit=50):
 
         })
 
-    results.sort(key=lambda x: x['probability'], reverse=True)
+    results.sort(key=lambda x: x['avg_cutoff'])
     return results[:limit]
 
 # ============================================================
@@ -239,7 +239,59 @@ def get_trends():
     return jsonify([{'year': r['year'], 'rank': r['closing_rank']} for r in rows])
 
 
+@app.route('/api/strategy', methods=['POST'])
+def generate_strategy():
+    data     = request.get_json()
+    rank     = int(data.get('rank', 0))
+    category = data.get('category', 'OC')
+    gender   = data.get('gender', 'BOYS')
+    branch   = data.get('branch', '')
 
+    results = predict_colleges(rank, category, gender, branch, limit=50)
+
+    if not results:
+        return jsonify({'error': 'No colleges found to generate strategy'}), 404
+
+    # Separate into buckets
+    safe   = [r for r in results if r['label'] == 'Safe']
+    target = [r for r in results if r['label'] == 'Target']
+    dream  = [r for r in results if r['label'] == 'Dream']
+
+    # Reliable = 2+ years of data
+    reliable_safe   = [r for r in safe   if r['years_count'] >= 2]
+    reliable_target = [r for r in target if r['years_count'] >= 2]
+    unreliable      = [r for r in results if r['years_count'] < 2]
+
+    # Risk assessment
+    total = len(results)
+    if len(safe) >= 5:
+        risk_level = 'LOW'
+        risk_msg   = 'You have strong options. Good position for counselling.'
+    elif len(safe) >= 2:
+        risk_level = 'MEDIUM'
+        risk_msg   = 'Limited safe options. Apply carefully in Round 1.'
+    else:
+        risk_level = 'HIGH'
+        risk_msg   = 'Very few safe options. Consider backup branches.'
+
+    # Build strategy
+    strategy = {
+        'rank'         : rank,
+        'category'     : category,
+        'branch'       : branch,
+        'risk_level'   : risk_level,
+        'risk_msg'     : risk_msg,
+        'total_options': total,
+        'round1'       : reliable_safe[:3],    # top 3 safe reliable colleges
+        'round2'       : reliable_target[:3],  # top 3 target colleges
+        'spot'         : dream[:2],            # top 2 dream shots
+        'skip'         : unreliable[:5],       # colleges to skip (bad data)
+        'summary'      : f"Based on your rank {rank:,} ({category}), you have "
+                         f"{len(safe)} safe, {len(target)} target, and {len(dream)} dream options. "
+                         f"Overall admission risk: {risk_level}."
+    }
+
+    return jsonify(strategy)
 
 
 # ============================================================
