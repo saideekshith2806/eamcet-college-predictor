@@ -536,183 +536,6 @@ footer {
   font-size: 0.8rem;
   border-top: 1px solid var(--gray200);
 }
-
-/* ── COMPARE CHECKBOX ── */
-.cmp-check {
-  width: 18px; height: 18px;
-  accent-color: var(--orange);
-  cursor: pointer;
-}
-
-/* ── COMPARE FLOAT BAR ── */
-#compareBar {
-  display: none;
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--navy);
-  color: var(--white);
-  padding: 14px 24px;
-  border-radius: 50px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
-  display: none;
-  align-items: center;
-  gap: 16px;
-  z-index: 999;
-  font-size: 0.9rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-#compareBar.show { display: flex; }
-#compareBar .cmp-names {
-  display: flex; gap: 8px; align-items: center;
-}
-.cmp-chip {
-  background: rgba(255,255,255,0.12);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  max-width: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.cmp-go-btn {
-  background: var(--orange);
-  color: var(--white);
-  border: none;
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  font-family: 'Sora', sans-serif;
-  cursor: pointer;
-}
-.cmp-go-btn:hover { background: var(--orange2); }
-.cmp-clear-btn {
-  background: transparent;
-  color: rgba(255,255,255,0.5);
-  border: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  line-height: 1;
-}
-
-/* ── COMPARE MODAL ── */
-#cmpModal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  z-index: 1000;
-  overflow-y: auto;
-  padding: 24px 16px;
-}
-#cmpModal.show { display: flex; align-items: flex-start; justify-content: center; }
-.cmp-modal-box {
-  background: var(--white);
-  border-radius: 20px;
-  width: 100%;
-  max-width: 900px;
-  padding: 32px;
-  position: relative;
-  box-shadow: 0 20px 80px rgba(0,0,0,0.3);
-}
-.cmp-modal-close {
-  position: absolute;
-  top: 20px; right: 24px;
-  background: var(--gray100);
-  border: none;
-  border-radius: 50%;
-  width: 36px; height: 36px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-}
-.cmp-modal-title {
-  font-size: 1.2rem;
-  font-weight: 800;
-  margin-bottom: 24px;
-  color: var(--navy);
-}
-.cmp-grid {
-  display: grid;
-  gap: 0;
-}
-.cmp-row {
-  display: grid;
-  border-bottom: 1px solid var(--gray100);
-  align-items: center;
-}
-.cmp-row:last-child { border-bottom: none; }
-.cmp-row.header-row {
-  background: var(--navy);
-  border-radius: 10px 10px 0 0;
-  margin-bottom: 0;
-}
-.cmp-cell {
-  padding: 13px 16px;
-  font-size: 0.85rem;
-}
-.cmp-row.header-row .cmp-cell {
-  color: rgba(255,255,255,0.75);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-.cmp-label {
-  font-weight: 600;
-  color: var(--gray600);
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: var(--gray50);
-  padding: 13px 16px;
-  border-right: 1px solid var(--gray200);
-}
-.cmp-winner {
-  background: #f0fdf4;
-  font-weight: 700;
-  color: #065f46;
-}
-.cmp-bar-wrap { display: flex; align-items: center; gap: 8px; }
-.cmp-bar-bg {
-  flex: 1; height: 8px;
-  background: var(--gray200);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.cmp-bar-fill { height: 100%; border-radius: 10px; }
-.cmp-chart-section {
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid var(--gray200);
-}
-.cmp-chart-section h3 {
-  font-size: 0.9rem;
-  font-weight: 700;
-  margin-bottom: 16px;
-  color: var(--gray800);
-}
-.cmp-charts {
-  display: grid;
-  gap: 24px;
-}
-.cmp-chart-card {
-  background: var(--gray50);
-  border-radius: 12px;
-  padding: 16px;
-  border: 1px solid var(--gray200);
-}
-.cmp-chart-label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--gray600);
-  margin-bottom: 10px;
-}
-.cmp-chart-canvas { height: 160px; }
 </style>
 </head>
 <body>
@@ -876,7 +699,6 @@ footer {
               <th>Trend</th>
               <th>Probability</th>
               <th>Your Chance</th>
-              <th>Compare</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -994,23 +816,6 @@ footer {
   TS EAMCET College Predictor &nbsp;|&nbsp; Data: 2020–2024 &nbsp;|&nbsp; For reference only. Always verify with official TSCHE counselling.
 </footer>
 
-<!-- COMPARE FLOAT BAR -->
-<div id="compareBar">
-  <span>⚖️ Compare:</span>
-  <div class="cmp-names" id="cmpNames"></div>
-  <button class="cmp-go-btn" onclick="openCompareModal()">Compare Now →</button>
-  <button class="cmp-clear-btn" onclick="clearCompare()" title="Clear">✕</button>
-</div>
-
-<!-- COMPARE MODAL -->
-<div id="cmpModal">
-  <div class="cmp-modal-box">
-    <button class="cmp-modal-close" onclick="closeCompareModal()">✕</button>
-    <div class="cmp-modal-title">⚖️ College Comparison</div>
-    <div id="cmpContent"></div>
-  </div>
-</div>
-
 <script>
 // ── STATE ──
 let allResults = [];
@@ -1018,8 +823,6 @@ let currentMode = 'branch';
 let expandedRow = null;
 let chartInstances = {};
 let trendChartInstance = null;
-let compareList = [];        // holds up to 3 college objects
-let cmpChartInstances = {};  // compare modal chart instances
 
 // ── SECTION SWITCHER ──
 function showSection(name, btn) {
@@ -1075,7 +878,6 @@ async function predict() {
 
   hideError();
   hideResults();
-  clearCompare();
 
   if (!rank || !category || !gender) { showError('Please fill in all fields.'); return; }
   if (parseInt(rank) <= 0 || parseInt(rank) > 200000) { showError('Enter a valid rank between 1 and 200000.'); return; }
@@ -1154,7 +956,6 @@ function renderTable(rows) {
     const chanceClass = r.label === 'Safe' ? 'chance-high' : r.label === 'Target' ? 'chance-target' : 'chance-dream';
     const chanceIcon  = r.label === 'Safe' ? '✅' : r.label === 'Target' ? '⚠️' : '🔴';
     const trendIcon   = r.trend === 'Getting Harder' ? '↗️ Harder' : r.trend === 'Getting Easier' ? '↘️ Easier' : '→ Stable';
-    const isChecked   = compareList.some(c => c.inst_code === r.inst_code && c.branch_name === r.branch_name);
 
     return `
       <tr onclick="toggleExpand(${i}, '${r.inst_code}', '${r.branch_name.replace(/'/g,"\\'")}', event)">
@@ -1179,13 +980,9 @@ function renderTable(rows) {
           </div>
         </td>
         <td><span class="chance-badge ${chanceClass}">${chanceIcon} ${r.label}</span></td>
-        <td onclick="event.stopPropagation()">
-          <input type="checkbox" class="cmp-check" ${isChecked ? 'checked' : ''}
-            onchange="toggleCompare(this, ${i})" title="Add to compare">
-        </td>
       </tr>
       <tr class="expand-row" id="expand-${i}">
-        <td colspan="9" class="expand-cell">
+        <td colspan="8" class="expand-cell">
           <div class="expand-info">
             <div class="ei-item">📊 <strong>Avg Cutoff:</strong> ${r.avg_cutoff.toLocaleString()}</div>
             <div class="ei-item">📅 <strong>Years of Data:</strong> ${r.years_count}</div>
@@ -1449,238 +1246,6 @@ const res = await fetch('/api/strategy', {
   document.getElementById('strategyPanel').style.display = 'block';
   document.getElementById('strategyPanel').scrollIntoView({ behavior: 'smooth' });
 }
-
-// ── COMPARE ──
-function toggleCompare(checkbox, rowIdx) {
-  // Find the college from allResults by matching rendered row index
-  // We need to match against the currently rendered rows
-  const trs = document.querySelectorAll('#tableBody tr:not(.expand-row)');
-  const tr = trs[rowIdx];
-  if (!tr) return;
-
-  // Find the college data by inst_code from the row
-  const collegeName = tr.querySelector('.college-name')?.textContent;
-  const college = allResults.find(r => r.college_name === collegeName);
-  if (!college) return;
-
-  if (checkbox.checked) {
-    if (compareList.length >= 3) {
-      checkbox.checked = false;
-      alert('You can compare up to 3 colleges at a time.');
-      return;
-    }
-    compareList.push(college);
-  } else {
-    compareList = compareList.filter(c => !(c.inst_code === college.inst_code && c.branch_name === college.branch_name));
-  }
-  updateCompareBar();
-}
-
-function updateCompareBar() {
-  const bar = document.getElementById('compareBar');
-  const names = document.getElementById('cmpNames');
-  if (compareList.length === 0) {
-    bar.classList.remove('show');
-    return;
-  }
-  bar.classList.add('show');
-  names.innerHTML = compareList.map(c =>
-    `<div class="cmp-chip" title="${c.college_name}">${c.college_name.split(' ').slice(0,3).join(' ')}</div>`
-  ).join('<span style="opacity:0.4">vs</span>');
-}
-
-function clearCompare() {
-  compareList = [];
-  updateCompareBar();
-  // Uncheck all checkboxes
-  document.querySelectorAll('.cmp-check').forEach(cb => cb.checked = false);
-}
-
-function openCompareModal() {
-  if (compareList.length < 2) { alert('Select at least 2 colleges to compare.'); return; }
-
-  // Destroy old charts
-  Object.values(cmpChartInstances).forEach(c => c.destroy());
-  cmpChartInstances = {};
-
-  const cols = compareList.length;
-  const colColors = ['#f97316', '#3b82f6', '#10b981'];
-
-  // Determine winners for each metric
-  const bestCutoff  = Math.min(...compareList.map(c => c.avg_cutoff));
-  const bestProb    = Math.max(...compareList.map(c => c.probability));
-  const bestYears   = Math.max(...compareList.map(c => c.years_count));
-
-  const chanceOrder = { Safe: 3, Target: 2, Dream: 1 };
-  const bestChance  = Math.max(...compareList.map(c => chanceOrder[c.label] || 0));
-
-  const rows = [
-    {
-      label: '🏫 College',
-      render: c => `<strong>${c.college_name}</strong><div style="font-size:0.75rem;color:var(--gray400);margin-top:3px">${c.inst_code} · ${c.college_type || 'PVT'}</div>`,
-      winner: null
-    },
-    {
-      label: '🌿 Branch',
-      render: c => `<span class="branch-badge">${shortBranch(c.branch_name)}</span>`,
-      winner: null
-    },
-    {
-      label: '📍 Location',
-      render: c => c.place || c.dist_code || '–',
-      winner: null
-    },
-    {
-      label: '✂️ Avg Cutoff',
-      render: c => `<strong style="font-family:'JetBrains Mono',monospace">${c.avg_cutoff.toLocaleString()}</strong><div style="font-size:0.72rem;color:var(--gray400)">lower = harder to get</div>`,
-      isWinner: c => c.avg_cutoff === bestCutoff
-    },
-    {
-      label: '🎯 Your Chance',
-      render: c => {
-        const cls = c.label === 'Safe' ? 'chance-high' : c.label === 'Target' ? 'chance-target' : 'chance-dream';
-        const icon = c.label === 'Safe' ? '✅' : c.label === 'Target' ? '⚠️' : '🔴';
-        return `<span class="chance-badge ${cls}">${icon} ${c.label}</span>`;
-      },
-      isWinner: c => (chanceOrder[c.label] || 0) === bestChance
-    },
-    {
-      label: '📊 Probability',
-      render: c => {
-        const color = c.probability >= 80 ? '#10b981' : c.probability >= 50 ? '#f59e0b' : '#ef4444';
-        return `
-          <div class="cmp-bar-wrap">
-            <div class="cmp-bar-bg">
-              <div class="cmp-bar-fill" style="width:${c.probability}%;background:${color}"></div>
-            </div>
-            <strong style="font-family:'JetBrains Mono',monospace;color:${color}">${c.probability}%</strong>
-          </div>`;
-      },
-      isWinner: c => c.probability === bestProb
-    },
-    {
-      label: '📈 Trend',
-      render: c => {
-        const icon = c.trend === 'Getting Harder' ? '↗️' : c.trend === 'Getting Easier' ? '↘️' : '→';
-        return `${icon} ${c.trend}`;
-      },
-      winner: null
-    },
-    {
-      label: '📅 Years of Data',
-      render: c => `${c.years_count} year${c.years_count > 1 ? 's' : ''}`,
-      isWinner: c => c.years_count === bestYears
-    },
-  ];
-
-  // Grid template: label col + one col per college
-  const gridTpl = `160px ${Array(cols).fill('1fr').join(' ')}`;
-
-  const tableHTML = rows.map(row => `
-    <div class="cmp-row" style="grid-template-columns:${gridTpl}">
-      <div class="cmp-label">${row.label}</div>
-      ${compareList.map(c => {
-        const win = row.isWinner ? row.isWinner(c) : false;
-        return `<div class="cmp-cell ${win ? 'cmp-winner' : ''}">${row.render(c)}</div>`;
-      }).join('')}
-    </div>
-  `).join('');
-
-  const headerHTML = `
-    <div class="cmp-row header-row" style="grid-template-columns:${gridTpl}">
-      <div class="cmp-cell"></div>
-      ${compareList.map((c, i) => `
-        <div class="cmp-cell" style="color:#fff;font-weight:700">
-          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${colColors[i]};margin-right:6px"></span>
-          ${c.college_name.split(' ').slice(0,4).join(' ')}
-        </div>
-      `).join('')}
-    </div>
-  `;
-
-  // Charts section — one chart per college showing year-wise cutoff
-  const chartsHTML = `
-    <div class="cmp-chart-section">
-      <h3>📅 Year-wise Cutoff History</h3>
-      <div class="cmp-charts" style="grid-template-columns:${Array(cols).fill('1fr').join(' ')}">
-        ${compareList.map((c, i) => `
-          <div class="cmp-chart-card">
-            <div class="cmp-chart-label" style="color:${colColors[i]}">
-              ${c.college_name.split(' ').slice(0,4).join(' ')} · ${shortBranch(c.branch_name)}
-            </div>
-            <div class="cmp-chart-canvas">
-              <canvas id="cmpChart-${i}"></canvas>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-
-  // Verdict
-  const topCollege = compareList.reduce((best, c) => c.probability > best.probability ? c : best);
-  const verdictHTML = `
-    <div style="margin-top:24px;padding:16px 20px;background:linear-gradient(135deg,#0d1b2a,#1a3a5c);border-radius:14px;color:#fff">
-      <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin-bottom:8px">🏆 Our Recommendation</div>
-      <div style="font-size:1rem;font-weight:700">${topCollege.college_name}</div>
-      <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-top:4px">
-        Highest admission probability at ${topCollege.probability}% · ${topCollege.trend} cutoff trend · ${topCollege.years_count} years of data
-      </div>
-    </div>
-  `;
-
-  document.getElementById('cmpContent').innerHTML = `
-    <div class="cmp-grid">${headerHTML}${tableHTML}</div>
-    ${chartsHTML}
-    ${verdictHTML}
-  `;
-
-  document.getElementById('cmpModal').classList.add('show');
-
-  // Render charts after DOM update
-  setTimeout(() => {
-    compareList.forEach((c, i) => {
-      const ctx = document.getElementById(`cmpChart-${i}`)?.getContext('2d');
-      if (!ctx || !c.yearly_data?.length) return;
-      const years = c.yearly_data.map(d => d.year);
-      const ranks = c.yearly_data.map(d => d.rank);
-      cmpChartInstances[i] = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: years,
-          datasets: [{
-            label: 'Closing Rank',
-            data: ranks,
-            backgroundColor: years.map((y, j) => j === years.length - 1 ? colColors[i] : colColors[i] + '55'),
-            borderColor: colColors[i],
-            borderWidth: 2,
-            borderRadius: 5,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `Closing Rank: ${ctx.raw.toLocaleString()}` } } },
-          scales: {
-            y: { reverse: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'JetBrains Mono', size: 9 } } },
-            x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-          }
-        }
-      });
-    });
-  }, 100);
-}
-
-function closeCompareModal() {
-  document.getElementById('cmpModal').classList.remove('show');
-  Object.values(cmpChartInstances).forEach(c => c.destroy());
-  cmpChartInstances = {};
-}
-
-// Close modal on backdrop click
-document.getElementById('cmpModal').addEventListener('click', function(e) {
-  if (e.target === this) closeCompareModal();
-});
 
 // Enter key
 document.addEventListener('keypress', e => { if (e.key === 'Enter') predict(); });

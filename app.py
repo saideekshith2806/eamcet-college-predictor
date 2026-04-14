@@ -37,27 +37,26 @@ def calculate_probability(user_rank, avg_cutoff):
 # ============================================================
 # PREDICTION LOGIC
 # ============================================================
-def predict_colleges(rank, category, gender, branch, limit=50):
+def predict_colleges(rank, category, gender, branch, limit=50, district=''):
     conn = get_db()
     cursor = conn.cursor()
 
-    query = '''
-        SELECT
-            inst_code,
-            college_name,
-            place,
-            dist_code,
-            college_type,
-            branch_name,
-            year,
-            closing_rank
-        FROM cutoffs
-        WHERE category    = ?
-          AND gender      = ?
-          AND branch_name LIKE ?
-        ORDER BY inst_code, branch_name, year
-    '''
-    rows = cursor.execute(query, (category, gender, f'%{branch}%')).fetchall()
+    if district:
+        query = '''
+            SELECT inst_code, college_name, place, dist_code, college_type, branch_name, year, closing_rank
+            FROM cutoffs
+            WHERE category = ? AND gender = ? AND branch_name LIKE ? AND dist_code = ?
+            ORDER BY inst_code, branch_name, year
+        '''
+        rows = cursor.execute(query, (category, gender, f'%{branch}%', district)).fetchall()
+    else:
+        query = '''
+            SELECT inst_code, college_name, place, dist_code, college_type, branch_name, year, closing_rank
+            FROM cutoffs
+            WHERE category = ? AND gender = ? AND branch_name LIKE ?
+            ORDER BY inst_code, branch_name, year
+        '''
+        rows = cursor.execute(query, (category, gender, f'%{branch}%')).fetchall()
     conn.close()
 
     from collections import defaultdict
@@ -167,7 +166,8 @@ def predict():
     rank     = data.get('rank')
     category = data.get('category', '').upper().strip()
     gender   = data.get('gender', '').upper().strip()
-    branch   = data.get('branch', '').strip()
+    branch   = data.get("branch", "").strip()
+    district = data.get("district", "").strip().upper()
 
     if not rank or not category or not gender or not branch:
         return jsonify({'error': 'Please fill all fields'}), 400
@@ -180,7 +180,7 @@ def predict():
     if rank <= 0 or rank > 200000:
         return jsonify({'error': 'Enter a valid rank between 1 and 200000'}), 400
 
-    results = predict_colleges(rank, category, gender, branch)
+    results = predict_colleges(rank, category, gender, branch, district=district)
 
     return jsonify({
         'rank'     : rank,
