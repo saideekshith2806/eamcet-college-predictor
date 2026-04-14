@@ -57,11 +57,11 @@ def clean_excel(filepath, year):
             rename_map[col] = 'INST_CODE'
         elif 'INSTITUTE NAME' in cu or 'COLLEGE NAME' in cu:
             rename_map[col] = 'COLLEGE_NAME'
-        elif cu == 'PLACE':
+        elif 'PLACE' in cu:
             rename_map[col] = 'PLACE'
-        elif 'DIST' in cu and 'CODE' in cu:
+        elif 'DIST' in cu:
             rename_map[col] = 'DIST_CODE'
-        elif 'COLLEGE TYPE' in cu or ('TYPE' in cu and 'COLLEGE' in cu):
+        elif 'TYPE' in cu:
             rename_map[col] = 'COLLEGE_TYPE'
         elif 'BRANCH' in cu and 'CODE' in cu:
             rename_map[col] = 'BRANCH_CODE'

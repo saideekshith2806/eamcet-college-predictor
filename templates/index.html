@@ -857,7 +857,7 @@ async function predict() {
     const res  = await fetch('/api/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ rank, category, gender, branch: branch || 'ENGINEERING' })
+      body: JSON.stringify({ rank, category, gender, branch: branch || 'ENGINEERING', district: document.getElementById('district').value })
     });
     const data = await res.json();
     if (data.error) { showError(data.error); return; }
@@ -1221,7 +1221,16 @@ document.addEventListener('keypress', e => { if (e.key === 'Enter') predict(); }
 // Init
 window.addEventListener('load', function() {
     loadBranches();
+    fetch('/api/districts').then(r => r.json()).then(districts => {
+        const sel = document.getElementById('district');
+        districts.forEach(d => {
+            const o = document.createElement('option');
+            o.value = d; o.textContent = d;
+            sel.appendChild(o);
+        });
+    });
 });
+
 </script>
 </body>
 </html>

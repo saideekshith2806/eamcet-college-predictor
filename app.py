@@ -34,7 +34,6 @@ def calculate_probability(user_rank, avg_cutoff):
         return 18
     else:
         return 10
-
 # ============================================================
 # PREDICTION LOGIC
 # ============================================================
@@ -82,12 +81,14 @@ def predict_colleges(rank, category, gender, branch, limit=50):
     for key, year_ranks in groups.items():
         year_ranks.sort(key=lambda x: x[0])
         years_count = len(year_ranks)
-        ranks_only  = [r for _, r in year_ranks]
-        avg_cutoff  = sum(ranks_only) / len(ranks_only)
 
-        # Skip colleges where cutoff is more than 5x the student rank
-        # These are irrelevant results
-        if avg_cutoff > rank * 2.5 or avg_cutoff < rank * 0.4:
+        weights = {2020: 1, 2021: 2, 2022: 3, 2023: 4, 2024: 5}
+        weighted_sum = sum(rk * weights.get(yr, 1) for yr, rk in year_ranks)
+        weight_total = sum(weights.get(yr, 1) for yr, _ in year_ranks)
+        avg_cutoff   = weighted_sum / weight_total
+        predicted_2025 = int(avg_cutoff)
+
+        if avg_cutoff > rank * 1.8 or avg_cutoff < rank * 0.5:
             continue
 
         ratio = rank / avg_cutoff
@@ -124,29 +125,26 @@ def predict_colleges(rank, category, gender, branch, limit=50):
         probability = calculate_probability(rank, int(avg_cutoff))
 
         results.append({
-            'inst_code'   : meta[key]['inst_code'],
-            'college_name': meta[key]['college_name'],
-            'place'       : meta[key]['place'],
-            'dist_code'   : meta[key]['dist_code'],
-            'college_type': meta[key]['college_type'],
-            'branch_name' : meta[key]['branch_name'],
-            'avg_cutoff'  : int(avg_cutoff),
-            'years_count' : years_count,
-            'chance'      : chance,
-            'label'       : label,
-            'score'       : score,
-            'ratio'       : round(ratio, 2),
-            'trend'       : trend,
-            'explanation' : explanation,
-
-
-            'probability' : probability,
-            'yearly_data': [
-    {'year': yr, 'rank': rk} 
-    for yr, rk in sorted(year_ranks)
-],
-
-
+            'inst_code'     : meta[key]['inst_code'],
+            'college_name'  : meta[key]['college_name'],
+            'place'         : meta[key]['place'],
+            'dist_code'     : meta[key]['dist_code'],
+            'college_type'  : meta[key]['college_type'],
+            'branch_name'   : meta[key]['branch_name'],
+            'avg_cutoff'    : int(avg_cutoff),
+            'years_count'   : years_count,
+            'chance'        : chance,
+            'label'         : label,
+            'score'         : score,
+            'ratio'         : round(ratio, 2),
+            'trend'         : trend,
+            'explanation'   : explanation,
+            'predicted_2025': predicted_2025,
+            'probability'   : probability,
+            'yearly_data'   : [
+                {'year': yr, 'rank': rk}
+                for yr, rk in sorted(year_ranks)
+            ],
         })
 
     results.sort(key=lambda x: x['avg_cutoff'])
@@ -292,6 +290,16 @@ def generate_strategy():
     }
 
     return jsonify(strategy)
+
+@app.route('/api/districts', methods=['GET'])
+def get_districts():
+    conn = get_db()
+    cursor = conn.cursor()
+    rows = cursor.execute(
+        'SELECT DISTINCT dist_code FROM cutoffs WHERE dist_code IS NOT NULL ORDER BY dist_code'
+    ).fetchall()
+    conn.close()
+    return jsonify([r['dist_code'] for r in rows])
 
 
 # ============================================================
