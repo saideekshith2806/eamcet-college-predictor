@@ -54,12 +54,21 @@ def predict_colleges(rank, category, gender, branch, limit=50, district='', mode
         weighted_sum = sum(rk * weights.get(yr, 1) for yr, rk in year_ranks)
         weight_total = sum(weights.get(yr, 1) for yr, _ in year_ranks)
         avg_cutoff = weighted_sum / weight_total
-        if avg_cutoff > rank * 1.8 or avg_cutoff < rank * 0.5:
-            continue
+        
+        # More lenient filtering - allow wider range for low ranks
+        if rank < 2000:
+            # For very low ranks, be more generous
+            if avg_cutoff > rank * 3.0 or avg_cutoff < rank * 0.3:
+                continue
+        else:
+            # For higher ranks, use standard range
+            if avg_cutoff > rank * 1.8 or avg_cutoff < rank * 0.5:
+                continue
+        
         ratio = rank / avg_cutoff
         if ratio <= 0.80:      label = 'Safe'
         elif ratio <= 1.05:    label = 'Target'
-        elif ratio <= 1.50:    label = 'Dream'
+        elif ratio <= 2.0:     label = 'Dream'
         else:                  continue
         trend = 'Stable'
         if len(year_ranks) >= 2:

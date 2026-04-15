@@ -25,15 +25,39 @@
   --white: #ffffff;
   --shadow: 0 4px 24px rgba(0,0,0,0.08);
   --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  --shadow-md: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-xl: 0 12px 48px rgba(0,0,0,0.1);
+  
+  /* Light mode */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --border-color: #e2e8f0;
+  --card-bg: #ffffff;
+}
+
+html[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #0f0f0f;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --border-color: #333333;
+  --card-bg: #2a2a2a;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+  --shadow-md: 0 2px 12px rgba(0,0,0,0.3);
+  --shadow-xl: 0 12px 48px rgba(0,0,0,0.6);
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
   font-family: 'Sora', sans-serif;
-  background: var(--gray50);
-  color: var(--gray800);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ── NAV ── */
@@ -48,6 +72,7 @@ nav {
   top: 0;
   z-index: 100;
   box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  transition: background-color 0.3s ease;
 }
 
 .logo {
@@ -59,7 +84,11 @@ nav {
 
 .logo span { color: var(--orange); }
 
-.nav-links { display: flex; gap: 8px; }
+.nav-links { 
+  display: flex; 
+  gap: 8px;
+  align-items: center;
+}
 
 .nav-btn {
   padding: 7px 18px;
@@ -77,6 +106,28 @@ nav {
 .nav-btn.active, .nav-btn:hover {
   background: rgba(249,115,22,0.15);
   color: var(--orange);
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--white);
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+  margin-left: 12px;
+}
+
+.dark-mode-toggle:hover {
+  background: rgba(249,115,22,0.2);
+  border-color: var(--orange);
 }
 
 /* ── HERO ── */
@@ -144,10 +195,14 @@ nav {
 
 /* ── SECTION PANELS ── */
 .panel {
-  background: var(--white);
+  background: var(--card-bg);
   border-radius: 16px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--gray200);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  margin-bottom: 24px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
   margin-bottom: 24px;
   overflow: hidden;
 }
@@ -162,7 +217,7 @@ nav {
 .panel-title {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--gray800);
+  color: var(--text-primary);
 }
 
 /* ── SEARCH MODES ── */
@@ -212,7 +267,7 @@ nav {
   display: block;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--gray600);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 8px;
@@ -222,14 +277,14 @@ nav {
 .form-group select {
   width: 100%;
   padding: 11px 14px;
-  border: 1.5px solid var(--gray200);
+  border: 1.5px solid var(--border-color);
   border-radius: 10px;
   font-size: 0.92rem;
   font-family: 'Sora', sans-serif;
-  color: var(--gray800);
-  background: var(--white);
+  color: var(--text-primary);
+  background: var(--card-bg);
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
   appearance: none;
   -webkit-appearance: none;
 }
@@ -298,8 +353,8 @@ nav {
 }
 .results-header.show { display: flex; }
 
-.results-title { font-size: 1.1rem; font-weight: 700; }
-.results-sub { font-size: 0.82rem; color: var(--gray400); margin-top: 2px; }
+.results-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+.results-sub { font-size: 0.82rem; color: var(--text-secondary); margin-top: 2px; }
 
 .chance-filters { display: flex; gap: 8px; }
 
@@ -383,19 +438,20 @@ th:last-child  { border-radius: 0 10px 10px 0; }
 
 td {
   padding: 14px 16px;
-  border-bottom: 1px solid var(--gray100);
+  border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
   font-size: 0.88rem;
+  color: var(--text-primary);
 }
 
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--gray50); }
+tr:hover td { background: var(--card-bg); }
 tr { cursor: pointer; transition: background 0.15s; }
 
-.col-num { color: var(--gray400); font-size: 0.8rem; width: 36px; }
+.col-num { color: var(--text-secondary); font-size: 0.8rem; width: 36px; }
 
-.college-name { font-weight: 600; color: var(--gray800); font-size: 0.9rem; }
-.college-sub  { font-size: 0.75rem; color: var(--gray400); margin-top: 2px; }
+.college-name { font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
+.college-sub  { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
 
 .branch-badge {
   display: inline-block;
@@ -408,8 +464,8 @@ tr { cursor: pointer; transition: background 0.15s; }
   white-space: nowrap;
 }
 
-.cutoff-val { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.95rem; color: var(--navy); }
-.cutoff-yr  { font-size: 0.7rem; color: var(--gray400); }
+.cutoff-val { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.95rem; color: var(--orange); }
+.cutoff-yr  { font-size: 0.7rem; color: var(--text-secondary); }
 
 .trend-badge {
   display: flex;
@@ -417,7 +473,7 @@ tr { cursor: pointer; transition: background 0.15s; }
   gap: 4px;
   font-size: 0.78rem;
   font-weight: 500;
-  color: var(--gray600);
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
@@ -473,8 +529,8 @@ tr { cursor: pointer; transition: background 0.15s; }
   flex-wrap: wrap;
 }
 
-.ei-item { font-size: 0.82rem; color: var(--gray600); }
-.ei-item strong { color: var(--gray800); }
+.ei-item { font-size: 0.82rem; color: var(--text-secondary); }
+.ei-item strong { color: var(--text-primary); }
 
 /* ── EMPTY ── */
 .empty {
@@ -508,6 +564,9 @@ tr { cursor: pointer; transition: background 0.15s; }
 .trend-summary strong { color: var(--gray800); }
 
 /* ── ABOUT SECTION ── */
+#homeSection { display: none; }
+#homeSection.show { display: block; }
+
 #aboutSection { display: none; }
 #aboutSection.show { display: block; }
 
@@ -519,22 +578,32 @@ tr { cursor: pointer; transition: background 0.15s; }
 }
 
 .about-card {
-  background: var(--gray50);
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid var(--gray200);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+.about-card:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-2px);
 }
 
 .about-card .icon { font-size: 1.6rem; margin-bottom: 10px; }
-.about-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
-.about-card p  { font-size: 0.82rem; color: var(--gray600); line-height: 1.6; }
+.about-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+.about-card p  { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
 
 footer {
-  text-align: center;
-  padding: 28px;
-  color: var(--gray400);
-  font-size: 0.8rem;
-  border-top: 1px solid var(--gray200);
+  text-align: left;
+  padding: 40px 48px;
+  background: var(--navy);
+  color: rgba(255,255,255,0.6);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.85rem;
+  transition: background-color 0.3s ease;
 }
 
 /* ── COMPARE CHECKBOX ── */
@@ -721,21 +790,141 @@ footer {
 <nav>
   <div class="logo">Find My <span>College</span></div>
   <div class="nav-links">
-    <button class="nav-btn active" onclick="showSection('predictor', this)">🎯 Predictor</button>
-    <button class="nav-btn" onclick="showSection('trends', this)">📈 Cutoff Trends</button>
+    <button class="nav-btn active" onclick="showSection('home', this)">🏠 Home</button>
+    <button class="nav-btn" onclick="showSection('predictor', this)">🎯 Predictor</button>
+    <button class="nav-btn" onclick="showSection('trends', this)">📈 Trends</button>
     <button class="nav-btn" onclick="showSection('about', this)">ℹ️ About</button>
+    <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
   </div>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
   <h1>TS EAMCET <span>College Predictor</span></h1>
-  <p>Enter your rank · Find eligible colleges · Explore cutoff trends (2020–2024)</p>
+  <p>Your trusted companion for college predictions and counselling strategy</p>
   <div class="hero-stats">
     <div class="hero-stat"><div class="num">231+</div><div class="lbl">Colleges</div></div>
     <div class="hero-stat"><div class="num">5</div><div class="lbl">Years Data</div></div>
-    <div class="hero-stat"><div class="num">9</div><div class="lbl">Categories</div></div>
+    <div class="hero-stat"><div class="num">82K+</div><div class="lbl">Records</div></div>
     <div class="hero-stat"><div class="num">Free</div><div class="lbl">No Login</div></div>
+  </div>
+</div>
+
+<!-- ═════════ HOME SECTION ═════════ -->
+<div id="homeSection" style="display:none">
+  <div class="container">
+    <!-- FEATURES SHOWCASE -->
+    <div style="margin-bottom:60px">
+      <div style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:2rem;font-weight:800;color:var(--text-primary);margin-bottom:12px">Explore Our Powerful Features</h2>
+        <p style="font-size:1rem;color:var(--text-secondary)">Everything you need to make informed college decisions</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px">
+        <!-- Feature 1 -->
+        <div onclick="showSection('predictor', document.querySelectorAll('.nav-btn')[1])" style="cursor:pointer;background:var(--card-bg);border:2px solid var(--border-color);border-radius:14px;padding:24px;text-align:center;transition:all 0.3s ease;box-shadow:var(--shadow-md);color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2.2rem;margin-bottom:12px">🎯</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">College Predictor</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Find eligible colleges based on your EAMCET rank. Get Safe, Target & Dream recommendations.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div onclick="showSection('predictor', document.querySelectorAll('.nav-btn')[1])" style="cursor:pointer;background:var(--card-bg);border:2px solid var(--border-color);border-radius:14px;padding:24px;text-align:center;transition:all 0.3s ease;box-shadow:var(--shadow-md);color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2.2rem;margin-bottom:12px">🏆</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Branch-Specific Search</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Find best colleges for your preferred engineering branch with detailed analytics.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div onclick="showSection('predictor', document.querySelectorAll('.nav-btn')[1])" style="cursor:pointer;background:var(--card-bg);border:2px solid var(--border-color);border-radius:14px;padding:24px;text-align:center;transition:all 0.3s ease;box-shadow:var(--shadow-md);color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2.2rem;margin-bottom:12px">🏫</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">College-Specific Search</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Check best branches available at your preferred college with cutoff history.</p>
+        </div>
+        <!-- Feature 4 - UNIQUE FEATURE -->
+        <div onclick="showSection('predictor', document.querySelectorAll('.nav-btn')[1])" style="cursor:pointer;background:linear-gradient(135deg,rgba(249,115,22,0.1),rgba(249,115,22,0.05));border:2px solid var(--orange);border-radius:14px;padding:24px;text-align:center;transition:all 0.3s ease;box-shadow:0 6px 32px rgba(249,115,22,0.15);color:var(--text-primary)" onmouseover="this.style.boxShadow='0 8px 48px rgba(249,115,22,0.25)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='0 6px 32px rgba(249,115,22,0.15)';this.style.transform='translateY(0)'">
+          <div style="font-size:2.2rem;margin-bottom:12px">🧭</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--orange);margin-bottom:8px">💡 Counselling Strategy</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6"><strong>UNIQUE:</strong> Generate personalized round-wise strategy. Smart recommendations for Safe, Target & Dream colleges.</p>
+        </div>
+        <!-- Feature 5 -->
+        <div onclick="showSection('trends', document.querySelectorAll('.nav-btn')[2])" style="cursor:pointer;background:var(--card-bg);border:2px solid var(--border-color);border-radius:14px;padding:24px;text-align:center;transition:all 0.3s ease;box-shadow:var(--shadow-md);color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2.2rem;margin-bottom:12px">📈</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Cutoff Trends</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Visualize year-wise cutoff history (2020-2024). Understand if colleges are getting harder or easier.</p>
+        </div>
+        <!-- Feature 6 -->
+        <div onclick="showSection('predictor', document.querySelectorAll('.nav-btn')[1])" style="cursor:pointer;background:var(--card-bg);border:2px solid var(--border-color);border-radius:14px;padding:24px;text-align:center;transition:all 0.3s ease;box-shadow:var(--shadow-md);color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2.2rem;margin-bottom:12px">⚖️</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Compare Colleges</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Compare up to 3 colleges side-by-side with probability, cutoffs & trend analysis.</p>
+        </div>
+        <!-- Feature 7 -->
+        <div onclick="showSection('predictor', document.querySelectorAll('.nav-btn')[1])" style="cursor:pointer;background:var(--card-bg);border:2px solid var(--border-color);border-radius:14px;padding:24px;text-align:center;transition:all 0.3s ease;box-shadow:var(--shadow-md);color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2.2rem;margin-bottom:12px">🗺️</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">District Filter</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Filter colleges by district. Perfect for location-based college preferences.</p>
+        </div>
+        <!-- Feature 8 -->
+        <div onclick="showSection('predictor', document.querySelectorAll('.nav-btn')[1])" style="cursor:pointer;background:var(--card-bg);border:2px solid var(--border-color);border-radius:14px;padding:24px;text-align:center;transition:all 0.3s ease;box-shadow:var(--shadow-md);color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2.2rem;margin-bottom:12px">🔍</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Smart Filters</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Filter by category, gender, branch & more. Get results tailored to your needs.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHY CHOOSE US -->
+    <div style="margin-bottom:60px">
+      <div style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:2rem;font-weight:800;color:var(--text-primary);margin-bottom:12px">Why Choose Our Platform?</h2>
+        <p style="font-size:1rem;color:var(--text-secondary)">The most reliable TS EAMCET prediction tool trusted by thousands</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;">
+        <!-- Benefit 1 -->
+        <div style="background:var(--card-bg);border-radius:12px;padding:24px;border:1px solid var(--border-color);box-shadow:var(--shadow-md);transition:all 0.3s;color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2rem;margin-bottom:14px">📊</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Real Historical Data</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">82,000+ records from official TS EAMCET counselling data. 5 years of comprehensive cutoff history (2020-2024) across 231+ colleges.</p>
+        </div>
+        <!-- Benefit 2 -->
+        <div style="background:var(--card-bg);border-radius:12px;padding:24px;border:1px solid var(--border-color);box-shadow:var(--shadow-md);transition:all 0.3s;color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2rem;margin-bottom:14px">🧠</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Smart Algorithm</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Our algorithm compares your rank against multi-year averages. Get Safe/Target/Dream classifications with probability scores.</p>
+        </div>
+        <!-- Benefit 3 -->
+        <div style="background:var(--card-bg);border-radius:12px;padding:24px;border:1px solid var(--border-color);box-shadow:var(--shadow-md);transition:all 0.3s;color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2rem;margin-bottom:14px">⚡</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Lightning Fast</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Get instant results. No waiting, no delays. Just quick and reliable predictions powered by advanced algorithms.</p>
+        </div>
+        <!-- Benefit 4 -->
+        <div style="background:var(--card-bg);border-radius:12px;padding:24px;border:1px solid var(--border-color);box-shadow:var(--shadow-md);transition:all 0.3s;color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2rem;margin-bottom:14px">🔐</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">No Authentication</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Start using immediately. No registration, no login, no user data collection. Complete privacy guaranteed.</p>
+        </div>
+        <!-- Benefit 5 -->
+        <div style="background:var(--card-bg);border-radius:12px;padding:24px;border:1px solid var(--border-color);box-shadow:var(--shadow-md);transition:all 0.3s;color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2rem;margin-bottom:14px">📈</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Trend Analysis</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Visualize cutoff trends. Understand if colleges are getting harder or easier. Make informed decisions with trend insights.</p>
+        </div>
+        <!-- Benefit 6 -->
+        <div style="background:var(--card-bg);border-radius:12px;padding:24px;border:1px solid var(--border-color);box-shadow:var(--shadow-md);transition:all 0.3s;color:var(--text-primary)" onmouseover="this.style.boxShadow='var(--shadow-xl)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(0)'">
+          <div style="font-size:2rem;margin-bottom:14px">🎯</div>
+          <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Always Updated</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">Database continuously updated with latest data. Stay informed with current college information and counselling details.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA SECTION -->
+    <div style="text-align:center;padding:40px;background:linear-gradient(135deg,var(--navy),#1a3a5c);border-radius:16px;margin-bottom:40px;box-shadow:var(--shadow-xl)">
+      <h2 style="font-size:1.6rem;font-weight:800;color:var(--white);margin-bottom:16px">Ready to Find Your Dream College?</h2>
+      <p style="font-size:1rem;color:rgba(255,255,255,0.8);margin-bottom:24px">Start predicting with your EAMCET rank, category & branch</p>
+      <button onclick="showSection('predictor', document.querySelectorAll('.nav-btn')[1])" style="background:var(--orange);color:var(--white);border:none;padding:14px 32px;border-radius:12px;font-size:1rem;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;transition:all 0.3s;letter-spacing:0.3px;box-shadow:0 4px 16px rgba(249,115,22,0.3)" onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 6px 24px rgba(249,115,22,0.4)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 16px rgba(249,115,22,0.3)'">
+        Start Predicting Now →
+      </button>
+    </div>
   </div>
 </div>
 
@@ -990,8 +1179,49 @@ footer {
 
 </div><!-- end container -->
 
-<footer>
-  TS EAMCET College Predictor &nbsp;|&nbsp; Data: 2020–2024 &nbsp;|&nbsp; For reference only. Always verify with official TSCHE counselling.
+<footer style="text-align:left;padding:40px 48px;background:#0d1b2a;color:rgba(255,255,255,0.6);border-top:1px solid rgba(255,255,255,0.1)">
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-bottom:32px">
+      <div>
+        <div style="font-weight:700;color:var(--white);margin-bottom:12px;font-size:0.95rem">Find My College</div>
+        <div style="font-size:0.85rem;line-height:2">
+          <div>TS EAMCET College Predictor</div>
+          <div>Your trusted companion for college predictions</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--white);margin-bottom:12px;font-size:0.95rem">Features</div>
+        <div style="font-size:0.85rem;line-height:1.8">
+          <div>🎯 College Predictor</div>
+          <div>🧭 Counselling Strategy</div>
+          <div>📈 Cutoff Trends</div>
+          <div>⚖️ Compare Colleges</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--white);margin-bottom:12px;font-size:0.95rem">Resources</div>
+        <div style="font-size:0.85rem;line-height:1.8">
+          <div>📚 About this Project</div>
+          <div>📊 Database Info</div>
+          <div>⚡ Quick Guide</div>
+          <div>🔗 Official Links</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--white);margin-bottom:12px;font-size:0.95rem">Info</div>
+        <div style="font-size:0.85rem;line-height:1.8">
+          <div>Data: 2020–2024</div>
+          <div>For reference only</div>
+          <div>Always verify officially</div>
+          <div>82,000+ records</div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:24px;text-align:center;font-size:0.8rem">
+      <p style="margin-bottom:8px">© 2026 TS EAMCET College Predictor. Made with ❤️ for engineering aspirants.</p>
+      <p>This tool provides predictions based on previous year's cutoff data and should be used for reference only. Always refer to official TG EAPCET websites and counselling authorities for accurate information.</p>
+    </div>
+  </div>
 </footer>
 
 <!-- COMPARE FLOAT BAR -->
@@ -1012,6 +1242,34 @@ footer {
 </div>
 
 <script>
+// ── DARK MODE ──
+function initDarkMode() {
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+  
+  setTheme(theme);
+}
+
+function setTheme(theme) {
+  const html = document.documentElement;
+  if (theme === 'dark') {
+    html.setAttribute('data-theme', 'dark');
+    document.getElementById('darkModeToggle').textContent = '☀️';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    html.removeAttribute('data-theme');
+    document.getElementById('darkModeToggle').textContent = '🌙';
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+function toggleDarkMode() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  setTheme(isDark ? 'light' : 'dark');
+}
+
 // ── STATE ──
 let allResults = [];
 let currentMode = 'branch';
@@ -1024,7 +1282,9 @@ let cmpChartInstances = {};  // compare modal chart instances
 // ── SECTION SWITCHER ──
 function showSection(name, btn) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
+  
+  document.getElementById('homeSection').style.display = name === 'home' ? 'block' : 'none';
   document.getElementById('predictorSection').style.display = name === 'predictor' ? 'block' : 'none';
   document.getElementById('trendsSection').classList.toggle('show', name === 'trends');
   document.getElementById('aboutSection').classList.toggle('show', name === 'about');
@@ -1688,8 +1948,10 @@ document.addEventListener('keypress', e => { if (e.key === 'Enter') predict(); }
 
 // Init
 window.addEventListener('load', function() {
+    initDarkMode();
     loadBranches();
-  
+    // Show home section on load
+    showSection('home', document.querySelectorAll('.nav-btn')[0]);
 });
 
 </script>
