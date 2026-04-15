@@ -45,18 +45,18 @@ def predict_colleges(rank, category, gender, branch, limit=50, district=''):
         query = '''
             SELECT inst_code, college_name, place, dist_code, college_type, branch_name, year, closing_rank
             FROM cutoffs
-            WHERE category = ? AND gender = ? AND branch_name LIKE ? AND dist_code = ?
+            WHERE category = ? AND gender = ? AND branch_name = ? AND dist_code = ?
             ORDER BY inst_code, branch_name, year
         '''
-        rows = cursor.execute(query, (category, gender, f'%{branch}%', district)).fetchall()
+        rows = cursor.execute(query, (category, gender, branch, district)).fetchall()
     else:
         query = '''
             SELECT inst_code, college_name, place, dist_code, college_type, branch_name, year, closing_rank
             FROM cutoffs
-            WHERE category = ? AND gender = ? AND branch_name LIKE ?
+            WHERE category = ? AND gender = ? AND branch_name = ?
             ORDER BY inst_code, branch_name, year
         '''
-        rows = cursor.execute(query, (category, gender, f'%{branch}%')).fetchall()
+        rows = cursor.execute(query, (category, gender, branch)).fetchall()
     conn.close()
 
     from collections import defaultdict
@@ -227,11 +227,11 @@ def get_trends():
         SELECT year, closing_rank
         FROM cutoffs
         WHERE inst_code = ?
-          AND branch_name LIKE ?
+          AND branch_name = ?
           AND category = ?
           AND gender = ?
         ORDER BY year ASC
-    ''', (inst_code, f'%{branch}%', category, gender)).fetchall()
+    ''', (inst_code, branch, category, gender)).fetchall()
     conn.close()
 
     return jsonify([{'year': r['year'], 'rank': r['closing_rank']} for r in rows])

@@ -1157,7 +1157,7 @@ function renderTable(rows) {
     const isChecked   = compareList.some(c => c.inst_code === r.inst_code && c.branch_name === r.branch_name);
 
     return `
-      <tr onclick="toggleExpand(${i}, '${r.inst_code}', '${r.branch_name.replace(/'/g,"\\'")}', event)">
+      <tr data-inst="${r.inst_code}" data-branch="${r.branch_name}" onclick="toggleExpand(${i}, '${r.inst_code}', '${r.branch_name.replace(/'/g,"\\'")}', event)">
         <td class="col-num">${i+1}</td>
         <td>
           <div class="college-name">${r.college_name}</div>
@@ -1452,15 +1452,13 @@ const res = await fetch('/api/strategy', {
 
 // ── COMPARE ──
 function toggleCompare(checkbox, rowIdx) {
-  // Find the college from allResults by matching rendered row index
-  // We need to match against the currently rendered rows
   const trs = document.querySelectorAll('#tableBody tr:not(.expand-row)');
   const tr = trs[rowIdx];
   if (!tr) return;
 
-  // Find the college data by inst_code from the row
-  const collegeName = tr.querySelector('.college-name')?.textContent;
-  const college = allResults.find(r => r.college_name === collegeName);
+  const instCode   = tr.dataset.inst;
+  const branchName = tr.dataset.branch;
+  const college = allResults.find(r => r.inst_code === instCode && r.branch_name === branchName);
   if (!college) return;
 
   if (checkbox.checked) {
