@@ -55,10 +55,15 @@ def predict_colleges(rank, category, gender, branch, limit=50, district='', mode
         weight_total = sum(weights.get(yr, 1) for yr, _ in year_ranks)
         avg_cutoff = weighted_sum / weight_total
         
-        # More lenient filtering - allow wider range for low ranks
-        if rank < 2000:
+        # More lenient filtering - adapt based on rank
+        if rank < 500:
+            # For extremely low ranks (top candidates), just show dream colleges
+            # No upper limit - they can get into anything
+            if avg_cutoff < rank * 0.2:
+                continue
+        elif rank < 2000:
             # For very low ranks, be more generous
-            if avg_cutoff > rank * 3.0 or avg_cutoff < rank * 0.3:
+            if avg_cutoff > rank * 3.5 or avg_cutoff < rank * 0.2:
                 continue
         else:
             # For higher ranks, use standard range
@@ -68,7 +73,7 @@ def predict_colleges(rank, category, gender, branch, limit=50, district='', mode
         ratio = rank / avg_cutoff
         if ratio <= 0.80:      label = 'Safe'
         elif ratio <= 1.05:    label = 'Target'
-        elif ratio <= 2.0:     label = 'Dream'
+        elif ratio <= 3.0:     label = 'Dream'
         else:                  continue
         trend = 'Stable'
         if len(year_ranks) >= 2:
