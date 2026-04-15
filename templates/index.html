@@ -1087,7 +1087,7 @@ async function predict() {
     const res  = await fetch('/api/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ rank, category, gender, branch: branch || 'ENGINEERING', district: document.getElementById('district').value })
+      body: JSON.stringify({ rank, category, gender, branch: branch || '', mode: currentMode, district: document.getElementById('district').value })
     });
     const data = await res.json();
     if (data.error) { showError(data.error); return; }
@@ -1400,7 +1400,8 @@ const res = await fetch('/api/strategy', {
         rank: parseInt(rank), 
         category, 
         gender, 
-        branch 
+        branch,
+        mode: currentMode
     })
 });
   const s = await res.json();
